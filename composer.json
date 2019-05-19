@@ -1,0 +1,22 @@
+{
+    "name": "lilis/meostream-dowloader",
+    "description": "Anime dowloader from meowstream.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "bungnewbie",
+            "email": "lamaaurizkhal@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "type": "library",
+    "require": {
+        "php": ">=5.6.4",
+        "ext-curl": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Meow\\": "src" 
+        }
+    }
+}
