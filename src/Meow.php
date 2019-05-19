@@ -28,6 +28,7 @@ final class Meow {
 
     public function __construct($url)
     {
+        header('Content-type: video/mp4');
         echo "works!\n";
         $this->url = $url;
     }
@@ -51,15 +52,19 @@ final class Meow {
         if(!empty($data)) {
             $r = $this->regex('!<meta itemprop=".*" content="(.*?)">!', $data);
             
-            $filename = date("Y-m-d").time().".mp4";
-            $this->download($r[0], $filename);
+            $data2 = $this->curls($r[0]);
+            $resp  = $this->regex('!meow\([\'^]{"file":"(.*?)".*!', stripslashes($data2));
+
+            $filename = date("Y-m-d")."-".time().".mp4";
+
+            return $this->download($resp, $filename);
         }
     }
 
-    private function download($text, $filename)
+    private function download($url, $filename)
     {
-        $fp = fopen($filename, "w");
-        fwrite($fp, $text);
+        $fp = @fopen($filename, "w");
+        fwrite($fp, $url);
         fclose($fp);
     }
     
