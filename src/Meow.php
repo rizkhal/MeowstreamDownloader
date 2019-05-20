@@ -26,6 +26,9 @@ final class Meow {
      */
     private $filename;
 
+    /**
+     * @param string
+     */
     public function __construct($url)
     {
         header('Content-type: video/mp4');
@@ -33,6 +36,10 @@ final class Meow {
         $this->url = $url;
     }
 
+    /**
+     * @param pattern $pattern
+     * @param content $data
+     */
     private function regex($patern, $data)
     {
         preg_match_all($patern, $data, $matches);
@@ -40,11 +47,18 @@ final class Meow {
         return $matches[1];
     }
 
+    /**
+     * @var executor
+     * @return void
+     */
     public function exec()
     {
         return $this->run();
     }
 
+    /**
+     * @method run to download
+     */
     private function run()
     {
         $url = "https://meowstream.com/".implode("", $this->filter())."/";
@@ -54,20 +68,14 @@ final class Meow {
             
             $data2 = $this->curls($r[0]);
             $resp  = $this->regex('!meow\([\'^]{"file":"(.*?)".*!', stripslashes($data2));
-
-            $filename = date("Y-m-d")."-".time().".mp4";
-
-            return $this->download($resp, $filename);
+            
+            return shell_exec("curl -O ".$resp[0]);
         }
     }
-
-    private function download($url, $filename)
-    {
-        $fp = @fopen($filename, "w");
-        fwrite($fp, $url);
-        fclose($fp);
-    }
     
+    /**
+     * @method filter url
+     */
     private function filter()
     {
         $result = [];
@@ -81,6 +89,10 @@ final class Meow {
         return $result;
     }
 
+    /**
+     * @param string
+     * @method run curl
+     */
     private function curls($url)
     {
         $ch = curl_init();
@@ -88,7 +100,9 @@ final class Meow {
         $options = [
             CURLOPT_URL => $url,
             CURLOPT_REFERER => "https://meowstream.com",
+            CURLOPT_POST => true,
             CURLOPT_VERBOSE => true,
+            CURLOPT_HTTPGET => true,
             CURLOPT_AUTOREFERER => false,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYPEER => false,
